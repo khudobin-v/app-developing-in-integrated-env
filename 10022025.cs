@@ -40,40 +40,36 @@
     }
 }
 
+
 public class Triangle {
-    public Point point_a, point_b, point_c;
+    public class Side
+    {
+        public Point point_a, point_b;
+        public Side(Point point_a, Point point_b)
+        {
+            this.point_a = point_a;
+            this.point_b = point_b;
+        }
+        public double CalcSide()
+        {
+            return this.point_a.CalcDistance(this.point_b);
+        }
+    }
+
+    public Side side_ab, side_ac, side_bc;
     public Triangle(Point point_a, Point point_b, Point point_c)
     {
-        this.point_a = point_a;
-        this.point_b = point_b;
-        this.point_c = point_c;
+        side_ab = new Side(point_a, point_b);     
+        side_bc = new Side(point_b, point_c);     
+        side_ac = new Side(point_a, point_c);     
     }
 
-    public Point PointA
-    {
-        get { return point_a; }
-        set { point_a = value; }
-    }
-    public Point PointB
-    {
-        get { return point_b; }
-        set { point_b = value; }
-    }
-    public Point PointC
-    {
-        get { return point_c; }
-        set { point_c = value; }
-    }
 
-    public void Print()
-    {
-        Console.WriteLine("Triangle with points: ({0}, {1}), ({2}, {3}), ({4}, {5})", PointA.x, PointA.y, PointB.x, PointB.y, PointC.x, PointC.y);
-    }
 
     public double CalcPerimeter()
     {
         double perimeter = 0;
-        perimeter = this.point_a.CalcDistance(this.point_b) + this.point_b.CalcDistance(point_c) + this.point_c.CalcDistance(point_a);
+        perimeter = side_ab.CalcSide() + side_ac.CalcSide() + side_bc.CalcSide();
         return perimeter;
     }
 
@@ -81,8 +77,14 @@ public class Triangle {
     {
         double square = 0;
         double halfPerimeter = this.CalcPerimeter() / 2;
-        square = Math.Sqrt(halfPerimeter * (halfPerimeter - this.point_a.CalcDistance(this.point_b)) * (halfPerimeter - this.point_b.CalcDistance(this.point_c)) * (halfPerimeter - this.point_c.CalcDistance(this.point_a)));
+        square = Math.Sqrt(halfPerimeter * (halfPerimeter - side_ab.CalcSide()) * (halfPerimeter - side_bc.CalcSide()) * (halfPerimeter - side_ac.CalcSide()));
         return square;
+    }
+
+    public void Print()
+    {
+        Console.WriteLine("Triangle's perimeter: {0}", this.CalcPerimeter());
+        Console.WriteLine("Triangle's square: {0}", this.CalcSquare());
     }
 }
 
@@ -108,9 +110,8 @@ class My
         y = Convert.ToInt32(Console.ReadLine());
 
         Point point3 = new Point(x, y);
+ 
         Triangle triangle = new Triangle(point1, point2, point3);
         triangle.Print();
-        Console.WriteLine(triangle.CalcPerimeter());
-        Console.WriteLine(triangle.CalcSquare());
     }
 }
